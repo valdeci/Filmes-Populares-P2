@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".FilmesActivity">
+    <group android:checkableBehavior="single"
+           app:showAsAction="never">
+        <item
+            android:id="@+id/action_check_popular"
+            android:titleCondensed="@string/title_condensed_menu_popular"
+            android:title="@string/title_menu_popular"
+            android:icon="@android:drawable/ic_menu_preferences">
+        </item>
+        <item
+            android:id="@+id/action_check_rate"
+            android:titleCondensed="@string/title_condensed_menu_rate"
+            android:title="@string/title_menu_rate"
+            android:icon="@android:drawable/ic_menu_preferences">
+        </item>
+        <item
+            android:id="@+id/action_check_favorite"
+            android:titleCondensed="@string/title_condensed_menu_favorite"
+            android:title="@string/title_menu_favorite"
+            android:icon="@android:drawable/ic_menu_preferences">
+        </item>
+    </group>
+</menu>

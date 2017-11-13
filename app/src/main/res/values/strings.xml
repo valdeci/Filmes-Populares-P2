@@ -1,0 +1,54 @@
+<resources>
+    <!--Params API values -->
+    <string name="API_KEY">API_KEY</string>
+    <string name="URL_IMAGE">http://image.tmdb.org/t/p/w185/</string>
+    <string name="MOVIE_BASE_URL">http://api.themoviedb.org/3/movie/</string>
+    <string name="PARAM_URL_IMAGE">http://image.tmdb.org/t/p/w185/</string>
+    <string name="PARAM_API_KEY">api_key</string>
+    <string name="PATH_VIDEOS">videos</string>
+    <string name="PATH_REVIEW">reviews</string>
+    <!--END-Params API values -->
+
+    <!--PARAM URI YOUTUBE-->
+    <string name="YOUTUBE_URL">https://www.youtube.com/</string>
+    <string name="PARAM_ID_VIDEO">v</string>
+    <string name="PATH_YOUTUBE">watch</string>
+    <!--END-PARAM URI YOUTUBE-->
+
+    <!--Activities values -->
+    <string name="app_name">Filmes famosos</string>
+    <string name="activity_detail">Detalhes</string>
+    <string name="no_movie_to_display">Nenhum filme favoritado</string>>
+    <!--END-Activities values -->
+
+    <!--Menu Preferences-->
+    <string name="title_menu_shared">Compartilhar</string>
+    <string name="title_menu_popular">Mais popular</string>
+    <string name="title_menu_rate">Melhor Avaliado</string>
+    <string name="title_condensed_menu_popular">Popular</string>
+    <string name="title_condensed_menu_rate">Avaliação</string>
+    <string name="string_avaliacao">%1$.1f/10</string>
+    <string name="title_menu_favorite">Favoritos</string>
+    <string name="title_condensed_menu_favorite">Favoritos</string>
+    <!--End-Menu Preferences-->
+
+    <!--Activity details-->
+    <string name="title_trailers">Trailers:</string>
+    <string name="title_reviews">Reviews:</string>
+    <string name="content_trailer_play">executar trailer</string>
+    <!--END-Activity details-->
+
+    <!--several information -->
+    <string name="offline_message_display">Apenas os favoritos estão disponíveis em modo off-line</string>
+    <string name="error_message">Erro ao carregar os dados</string>
+    <string name="info_image_movie">Cartaz do filme</string>
+    <string name="info_trailer">Nenhum trailer disponível</string>
+    <string name="info_reviews">Nenhum review disponível</string>
+    <string name="info_trailer_off_line">Modo offline sem trailers disponíveis</string>
+    <string name="info_reviews_off_line">Modo offline sem reviews disponíveis</string>
+    <string name="path_image">/imagens/</string>
+    <string name="info_review_author">Screen-Space</string>
+    <string name="info_add_favorite">adicionado aos favoritos</string>>
+    <string name="info_removed_favorite">removido dos favoritos</string>>
+    <!--END-several information -->
+</resources>

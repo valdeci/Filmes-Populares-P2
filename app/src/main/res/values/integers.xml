@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="columns_number_recyclerview">2</integer>
+    <integer name="key_popular">0</integer>
+    <integer name="key_rated">1</integer>
+    <integer name="key_favorite">2</integer>
+</resources>
