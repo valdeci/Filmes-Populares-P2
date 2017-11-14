@@ -21,6 +21,10 @@ import br.com.valdecipedroso.filmesfamosos.utilities.NetworkUtils;
 
 class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.TrailersAdapterViewHolder> {
 
+    public interface TrailersAdapterOnClickHandler {
+        void onClick(Trailer filmeSelected);
+    }
+
     private final TrailersAdapterOnClickHandler mClickHandler;
     private Context mContext;
     private List<Trailer> mTrailerData;
@@ -53,10 +57,6 @@ class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.TrailersAdapt
         return mTrailerData.size();
     }
 
-    public interface TrailersAdapterOnClickHandler {
-        void onClick(Trailer filmeSelected);
-    }
-
     public class TrailersAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         private final TextView mTextViewTrailer;
 
@@ -87,7 +87,6 @@ class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.TrailersAdapt
 
     @Override
     public int getItemViewType(int position) {
-
         return super.getItemViewType(position);
     }
 }

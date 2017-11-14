@@ -3,7 +3,6 @@ package br.com.valdecipedroso.filmesfamosos;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -20,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -93,7 +91,7 @@ public class FilmesActivity extends AppCompatActivity implements LoaderCallbacks
             LoaderCallbacks<Cursor> callback = FilmesActivity.this;
             getSupportLoaderManager().initLoader(FILMES_LOADER_ID, null, callback);
         }else{
-            mFilmesFetchTask = new FilmesFetchTask(this);
+            mFilmesFetchTask = new FilmesFetchTask(this, new FetchMyDataTaskCompleteListener());
             mFilmesFetchTask.execute();
         }
     }
@@ -104,7 +102,7 @@ public class FilmesActivity extends AppCompatActivity implements LoaderCallbacks
             getSupportLoaderManager().restartLoader(FILMES_LOADER_ID, null, callback);
         }else{
             if(NetworkUtils.isNetworkConnected(mContext)){
-                 mFilmesFetchTask = new FilmesFetchTask(this);
+                 mFilmesFetchTask = new FilmesFetchTask(this, new FetchMyDataTaskCompleteListener());
                  mFilmesFetchTask.execute();
             }else{
                 loadFinished(null);
@@ -114,7 +112,6 @@ public class FilmesActivity extends AppCompatActivity implements LoaderCallbacks
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-
         Parcelable[] parcelables = ReturnMoviesParcelabled();
         outState.putParcelableArray(ON_SAVE_INSTANCE_STATE, parcelables);
         super.onSaveInstanceState(outState);
@@ -216,7 +213,6 @@ public class FilmesActivity extends AppCompatActivity implements LoaderCallbacks
 
     }
 
-
     private void showFilmesDataView(List<Filme> filmes) {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         if ((filmes == null) || (filmes.size() != 0)) {
@@ -234,47 +230,18 @@ public class FilmesActivity extends AppCompatActivity implements LoaderCallbacks
         }
     }
 
-
-    private class FilmesFetchTask extends AsyncTask<Void, Void, List<Filme>> {
-        Context mContext;
-
-        public FilmesFetchTask(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        protected List<Filme> doInBackground(Void... voids) {
-            Integer orderedBy = FilmesPreferences.getPreferredFilmesOrderPopular(mContext);
-            return ConsultarJSONURL(orderedBy);
-        }
-
-        @Override
-        protected void onPostExecute(List<Filme> filmes) {
-            super.onPostExecute(filmes);
-            loadFinished(filmes);
-        }
-
-        private List<Filme> ConsultarJSONURL(Integer orderedBy) {
-            URL filmesRequestUrl = NetworkUtils.buildUrl(NetworkUtils.getUriMovies(mContext, orderedBy));
-
-            try {
-                String jsonFilmesResponse = NetworkUtils
-                        .getResponseFromHttpUrl(filmesRequestUrl);
-
-                return OpenFilmesJsonUtils
-                        .getFilmesStringsFromJson(jsonFilmesResponse);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
-
     @Override
     public void onClick(Filme filmeSelected) {
         Intent it = new Intent(getBaseContext(), DetailActivity.class);
         it.putExtra(Intent.EXTRA_TEXT, filmeSelected);
         startActivity(it);
+    }
+
+    public class FetchMyDataTaskCompleteListener implements AsyncTaskComplete.AsyncTaskCompleteListener<List<Filme>>
+    {
+        @Override
+        public void onTaskComplete(List<Filme> result) {
+            loadFinished(result);
+        }
     }
 }

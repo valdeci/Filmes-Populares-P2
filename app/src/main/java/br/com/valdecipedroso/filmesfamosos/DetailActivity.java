@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.net.URL;
 import java.util.List;
 
 import br.com.valdecipedroso.filmesfamosos.data.FilmesContract.FilmeEntry;
@@ -33,7 +31,7 @@ import static android.R.drawable.btn_star_big_off;
 import static android.R.drawable.btn_star_big_on;
 
 
-public class DetailActivity extends AppCompatActivity  implements TrailersAdapter.TrailersAdapterOnClickHandler{
+public class DetailActivity extends AppCompatActivity  implements TrailersAdapter.TrailersAdapterOnClickHandler {
     private Filme mFilmes;
     private boolean mIsFavoriteMovie;
     private Integer mIdFilme;
@@ -133,11 +131,8 @@ public class DetailActivity extends AppCompatActivity  implements TrailersAdapte
         });
 
         if(NetworkUtils.isNetworkConnected(mContext)){
-            TrailersFetchTask trailersFetchTask = new TrailersFetchTask();
-            ReviewsFetchTask reviewsFetchTask = new ReviewsFetchTask();
-
-            trailersFetchTask.execute();
-            reviewsFetchTask.execute();
+            new TrailerFecthTask(this, new FetchTrailerTaskCompleteListener()).execute(mIdFilme);
+            new ReviewsFetchTask(this, new FetchReviewTaskCompleteListener()).execute(mIdFilme);
         }else{
             mTextViewTitleTrailer.setText(getText(R.string.info_trailer_off_line));
             mTextViewTitleReview.setText(getText(R.string.info_reviews_off_line));
@@ -217,29 +212,22 @@ public class DetailActivity extends AppCompatActivity  implements TrailersAdapte
         return super.onOptionsItemSelected(item);
     }
 
-    private class TrailersFetchTask extends AsyncTask<Void, Void, List<Trailer>> {
-
+    public class FetchReviewTaskCompleteListener implements AsyncTaskComplete.AsyncTaskCompleteListener<List<Review>>
+    {
         @Override
-        protected List<Trailer> doInBackground(Void... voids) {
-            try {
-                URL trailersRequestUrl = NetworkUtils.buildUrl(NetworkUtils.getUriTrailers(mContext, mIdFilme));
-
-                String jsonTrailersResponse = NetworkUtils
-                        .getResponseFromHttpUrl(trailersRequestUrl);
-
-                return OpenFilmesJsonUtils
-                        .getTrailersStringsFromJson(jsonTrailersResponse);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+        public void onTaskComplete(List<Review> result) {
+            if (result == null){
+                mTextViewTitleReview.setText(mContext.getResources().getString(NetworkUtils.isNetworkConnected(mContext) ? R.string.info_reviews:R.string.info_reviews_off_line));
+            }else{
+                mReviewsAdapter.setReviewData(result);
             }
         }
+    }
 
+    public class FetchTrailerTaskCompleteListener implements AsyncTaskComplete.AsyncTaskCompleteListener<List<Trailer>>
+    {
         @Override
-        protected void onPostExecute(List<Trailer> trailers) {
-            super.onPostExecute(trailers);
-
+        public void onTaskComplete(List<Trailer> trailers) {
             if (trailers == null){
                 mTextViewTitleTrailer.setText(NetworkUtils.isNetworkConnected(mContext) ? R.string.info_trailer :R.string.info_trailer_off_line);
             }else{
@@ -250,33 +238,6 @@ public class DetailActivity extends AppCompatActivity  implements TrailersAdapte
                 }
 
                 mTrailersAdapter.setTrailerData(trailers);
-            }
-        }
-    }
-
-    private class ReviewsFetchTask extends AsyncTask<Void, Void, List<Review>> {
-
-        @Override
-        protected List<Review> doInBackground(Void... voids) {
-            URL reviewsRequestUrl = NetworkUtils.buildUrl(NetworkUtils.getUriReviews(mContext, mIdFilme));
-
-            try {
-                String jsonReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewsRequestUrl);
-
-                return  OpenFilmesJsonUtils.getReviewsStringsFromJson(jsonReviewResponse);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Review> data) {
-            super.onPostExecute(data);
-            if (data == null){
-                mTextViewTitleReview.setText(mContext.getResources().getString(NetworkUtils.isNetworkConnected(mContext) ? R.string.info_reviews:R.string.info_reviews_off_line));
-            }else{
-                mReviewsAdapter.setReviewData(data);
             }
         }
     }
