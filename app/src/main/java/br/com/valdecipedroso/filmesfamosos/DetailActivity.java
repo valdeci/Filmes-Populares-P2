@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +25,9 @@ import java.util.List;
 import br.com.valdecipedroso.filmesfamosos.data.FilmesContract.FilmeEntry;
 import br.com.valdecipedroso.filmesfamosos.utilities.ImageSaver;
 import br.com.valdecipedroso.filmesfamosos.utilities.NetworkUtils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.R.drawable.btn_star_big_off;
 import static android.R.drawable.btn_star_big_on;
@@ -36,46 +38,38 @@ public class DetailActivity extends AppCompatActivity  implements TrailersAdapte
     private boolean mIsFavoriteMovie;
     private Integer mIdFilme;
     private Context mContext;
-    private TextView mTextViewTitleTrailer;
-    private TextView mTextViewTitleReview;
     private TrailersAdapter mTrailersAdapter;
     private ReviewsAdapter mReviewsAdapter;
-    private TextView mButtonFavorite;
     private String mLinkTrailerShare;
+
+    @BindView(R.id.recycler_view_trailers) RecyclerView  recyclerViewTrailers;
+    @BindView(R.id.recycler_view_reviews) RecyclerView recyclerViewReviews;
+    @BindView(R.id.tv_title_trailer) TextView mTextViewTitleTrailer;
+    @BindView(R.id.tv_title_reviews) TextView mTextViewTitleReview;
+    @BindView(R.id.bt_favorite) Button mButtonFavorite;
+    @BindView(R.id.tv_titulo_original) TextView tituloOriginal;
+    @BindView(R.id.tv_cartaz) ImageView cartaz;
+    @BindView(R.id.tv_sinopse) TextView sinopse;
+    @BindView(R.id.tv_avaliacao) TextView avaliacao;
+    @BindView(R.id.tv_data_lancamento) TextView dataLancamento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ImageView cartaz;
-        TextView tituloOriginal;
-        TextView sinopse;
-        TextView avaliacao;
-        TextView dataLancamento;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
+        ButterKnife.bind(this);
         mContext = this;
 
         mTrailersAdapter = new TrailersAdapter(this, DetailActivity.this);
-        RecyclerView recyclerViewTrailers = (RecyclerView) findViewById(R.id.recycler_view_trailers);
         recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerViewTrailers.setHasFixedSize(true);
         recyclerViewTrailers.setAdapter(mTrailersAdapter);
 
         mReviewsAdapter = new ReviewsAdapter();
-        RecyclerView recyclerViewReviews = (RecyclerView) findViewById(R.id.recycler_view_reviews);
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerViewReviews.setHasFixedSize(true);
         recyclerViewReviews.setAdapter(mReviewsAdapter);
-
-        mTextViewTitleTrailer = (TextView) findViewById(R.id.tv_title_trailer);
-        mTextViewTitleReview = (TextView) findViewById(R.id.tv_title_reviews);
-        mButtonFavorite = (Button) findViewById(R.id.bt_favorite);
-        tituloOriginal = (TextView) findViewById(R.id.tv_titulo_original);
-        cartaz = (ImageView) findViewById(R.id.tv_cartaz);
-        sinopse = (TextView) findViewById(R.id.tv_sinopse);
-        avaliacao = (TextView) findViewById(R.id.tv_avaliacao);
-        dataLancamento = (TextView) findViewById(R.id.tv_data_lancamento);
 
         Intent it = getIntent();
 
@@ -113,23 +107,6 @@ public class DetailActivity extends AppCompatActivity  implements TrailersAdapte
 
         changeBackgroundStarFavorite();
 
-        mButtonFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mIsFavoriteMovie){
-                    RemoveMovie();
-                    Toast.makeText(mContext, getResources().getText(R.string.info_removed_favorite), Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    AddNewMovie();
-                    Toast.makeText(mContext, getResources().getText(R.string.info_add_favorite), Toast.LENGTH_SHORT).show();
-                }
-
-                mIsFavoriteMovie = !mIsFavoriteMovie;
-                changeBackgroundStarFavorite();
-            }
-        });
-
         if(NetworkUtils.isNetworkConnected(mContext)){
             new TrailerFecthTask(this, new FetchTrailerTaskCompleteListener()).execute(mIdFilme);
             new ReviewsFetchTask(this, new FetchReviewTaskCompleteListener()).execute(mIdFilme);
@@ -137,6 +114,21 @@ public class DetailActivity extends AppCompatActivity  implements TrailersAdapte
             mTextViewTitleTrailer.setText(getText(R.string.info_trailer_off_line));
             mTextViewTitleReview.setText(getText(R.string.info_reviews_off_line));
         }
+    }
+
+    @OnClick(R.id.bt_favorite)
+    public void Favorite() {
+        if (mIsFavoriteMovie){
+            RemoveMovie();
+            Toast.makeText(mContext, getResources().getText(R.string.info_removed_favorite), Toast.LENGTH_SHORT).show();
+        }
+        else{
+            AddNewMovie();
+            Toast.makeText(mContext, getResources().getText(R.string.info_add_favorite), Toast.LENGTH_SHORT).show();
+        }
+
+        mIsFavoriteMovie = !mIsFavoriteMovie;
+        changeBackgroundStarFavorite();
     }
 
     private void changeBackgroundStarFavorite() {

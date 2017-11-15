@@ -28,18 +28,21 @@ import br.com.valdecipedroso.filmesfamosos.data.FilmesPreferences;
 import br.com.valdecipedroso.filmesfamosos.utilities.FilmesUtils;
 import br.com.valdecipedroso.filmesfamosos.utilities.ImageFetchTask;
 import br.com.valdecipedroso.filmesfamosos.utilities.NetworkUtils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class FilmesActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, FilmesAdapter.FilmesAdapterOnClickHandler {
 
-    private TextView mErrorMessageDisplay;
-    private TextView mNoMovieToDisplay;
-    private TextView mOfflineMessage;
-    private RecyclerView mRecyclerView;
-    private ProgressBar mLoadingIndicator;
     private FilmesAdapter mFilmesAdapter;
     private Context mContext;
     private FilmesFetchTask mFilmesFetchTask;
     private static final String ON_SAVE_INSTANCE_STATE = "savedInstanceState";
+
+    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
+    @BindView(R.id.tv_no_movie_to_display) TextView mNoMovieToDisplay;
+    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
+    @BindView(R.id.tv_offline_message_display) TextView mOfflineMessage;
+    @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
     private static final int FILMES_LOADER_ID = 1264;
 
@@ -47,15 +50,13 @@ public class FilmesActivity extends AppCompatActivity implements LoaderCallbacks
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filmes);
+        ButterKnife.bind(this);
 
         mContext = this;
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
-        mNoMovieToDisplay = (TextView) findViewById(R.id.tv_no_movie_to_display);
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-        mOfflineMessage= (TextView) findViewById(R.id.tv_offline_message_display);
+
         mFilmesAdapter = new FilmesAdapter(this, FilmesActivity.this);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns() , GridLayoutManager.VERTICAL, false));
+
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mFilmesAdapter);
 
